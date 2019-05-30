@@ -1,0 +1,47 @@
+---
+title: "SQL Data Upload"
+author: "Julie Norman"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Library
+
+```{r}
+library(RODBC)
+```
+
+
+## All Coding
+
+```{r}
+dbhandle <- odbcDriverConnect(
+  'driver={SQL Server};
+  server=boi-recondb;
+  database=LM;
+  trusted_connection=true') 
+
+Testdf <- sqlQuery(dbhandle, "SELECT TOP 50 * FROM SecurityTypeData std")
+```
+
+
+### Online Resource
+
+https://blog.learningtree.com/querying-sql-server-data-from-r-using-rodbc/
+
+
+## Manual connect
+
+Follow instructions on the site
+https://turbofuture.com/computers/Connect-to-SQL-Server-from-R
+
+```{r}
+connection = odbcConnect( "boi-recondb") 
+
+Testdf <- sqlQuery(connection, "SELECT TOP 50 * FROM SecurityTypeData std")
+```
+
