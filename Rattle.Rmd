@@ -1,0 +1,55 @@
+---
+title: "rattle"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("rattle")
+library("arules")
+
+```
+
+
+```{r}
+# Generate the association rules.
+
+crs$apriori <- apriori(crs$transactions, parameter = list(support=0.100, confidence=0.100, minlen=2))
+
+# Summarise the resulting rule set.
+
+generateAprioriSummary(crs$apriori)
+
+# Time taken: 0.05 secs
+
+# List rules.
+
+inspect(sort(crs$apriori, by="support"))
+
+# Interesting Measures.
+
+interestMeasure(sort(crs$apriori, by="support"), c("chiSquare", "hyperLift", "hyperConfidence", "leverage", "oddsRatio", "phi"), crs$transactions)
+```
+
+```{r}
+# Relative Frequencies Plot 
+
+# Association rules are implemented in the 'arules' package.
+
+library(arules, quietly=TRUE)
+
+# Generate a transactions dataset.
+
+crs$transactions <- as(split(crs$dataset[crs$train,]$RainTomorrow, crs$dataset[crs$train,]$Date), "transactions")
+
+# Plot the relative frequencies.
+
+itemFrequencyPlot(crs$transactions, support=0.1, cex=0.8)
+
+```
+

@@ -1,0 +1,78 @@
+---
+title: "Machine Learning"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Libraries
+
+```{r}
+library("caret")
+```
+
+#Data
+
+```{r}
+data("iris")
+dataset <- iris
+```
+
+#Create Validation Dataset
+
+```{r}
+#list 80% of the rows in the dataset
+val_index <- createDataPartition(dataset$Species, p=0.80, list=FALSE)
+
+#select 20% for validation
+val <- dataset[-val_index,]
+
+#use 80% to tran and test
+dataset <- dataset[val_index,]
+```
+
+
+#Summarize Data
+
+## Dimensions
+```{r}
+dim(dataset)
+```
+
+## Types
+
+```{r}
+sapply(dataset, class)
+```
+
+## summarise
+
+```{r}
+head(dataset)
+```
+
+## Levels of Class
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

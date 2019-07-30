@@ -1,0 +1,156 @@
+---
+title: "Association Mining"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(max.print = 150)
+```
+
+
+# Libraries
+
+```{r}
+library("arules")
+library("arulesViz")
+```
+
+# Data Upload
+
+```{r}
+data("Groceries")
+
+class(Groceries)
+
+labels(Groceries)
+```
+
+```{r}
+summary(Groceries)
+```
+
+
+# Generating Rules
+
+## Parameters
+
+- Suppport: how frequently the itemset appears in the dataset. Ex: citrus fruit is 1/2 given that it appears in one out of two transactions
+- Confidence: How often the rule is found true
+
+
+## Apriori Algorithm
+
+```{r}
+grocery_rules <- apriori(Groceries, parameter = list(support = 0.01, confidence = 0.5))
+
+# appearance: specify rhs and lhs
+# maxlen: rule length
+```
+
+
+### Rule Vocab
+
+1. minval: minimum value of the support an itemset should satisfy to be a part of a rule
+2. smax: maximum support value for an itemst
+3. arem (Additional Rule Evaluation Paramet): support and confidence restrain rule count, arem can do the same
+  - none: no additional value
+  - diff: absolute confidence difference
+  - quot: difference of confidence quotien to 1 
+  - aimp: absolute difference of improvement to 1
+  - info: information difference to prior
+  - chi2: normalized X^2 measure
+4. aval: indicates whether to return the additional rule evaluation measure selected with arem
+5. originalSupport: the traditional support value only considers both LHS (left hand side) and RHS (output) items for calculating support. If you want to use only the LHS  items for calculation then you need to set this to false
+6. maxtime: maximum amount of time allowed to check for subsets
+7. minlen: minimum number of items required in the rule
+8. maxlen: maximum number of items that can be present in a rule
+
+
+```{r}
+inspect(head(sort(grocery_rules, by = "confidence"), 10))
+```
+
+
+## Limiting number of rules
+
+```{r}
+#what products are bought before buying whole milk
+wholemilk_rules <- apriori(data=Groceries, parameter = list(supp = 0.001, conf = 0.08), appearance = list(rhs = "whole milk") )
+```
+
+```{r}
+inspect(head(sort(wholemilk_rules, by = "support"), 10))
+```
+
+
+limit rules by adjusting parameters, most common include changing support and confidence
+
+```{r}
+grocery_rules_increased_support <- apriori(Groceries, parameter = list(support = 0.02, confidence = 0.5) )
+```
+
+For stronger rules you increase confidence
+For lengthier rules you increase the maxlen parameter (decrease for shorter rules)
+
+remove shorter rules that are represented in longer rules
+```{r}
+subsets <- which(colSums(is.subset(grocery_rules, grocery_rules))>1)
+
+grocery_rules <- grocery_rules[-subsets]
+```
+
+
+
+### Using AREM Parameter
+
+```{r}
+#1.5 million rules
+#rules <- apriori(Groceries, parameter = list(supp = 0.0001, conf = 0.5))
+
+#.982 million
+#rules_chi2 <- apriori(Groceries, parameter = list(supp = 0.0001, conf = 0.5, arem = "chi2"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
